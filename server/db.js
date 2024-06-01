@@ -7,11 +7,4 @@ var con = mysql.createConnection({
   database: "crimesdb"
 });
 
-con.connect(function(err) {
-  if (err) throw err;
-  if (err) throw err;
-  con.query("SELECT * FROM crimes LIMIT 10", function (err, result, fields) {
-    if (err) throw err;
-    console.log(result);
-  });
-});
+module.exports = con;
