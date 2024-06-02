@@ -20,7 +20,8 @@ app.get('/crimesForZipcode/:zipcode', (req, res) => {
     const zipcode = req.params.zipcode;
     const query = `
         SELECT crimeType, longitude, latitude, income FROM crimes
-        WHERE zip_code = ${zipcode};`;
+        WHERE zip_code = ${zipcode};
+    `;
     pool.getConnection(function (err, con) {
         if (err) throw err;
         con.query(query, function (err, results) {
