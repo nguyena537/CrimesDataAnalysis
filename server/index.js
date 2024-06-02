@@ -77,4 +77,19 @@ app.get('/mostCommonIncome', (req, res) => {
 //     });
 //   });
 
+app.get('/mostCommonCrimeByZipCode/:zipcode', (req, res) => {
+    const zipcode = req.params.zipcode;
+    const query = `
+        SELECT * FROM mostCommonCrimeByZipCode
+        WHERE zip_code = ${zipcode};`;
+
+    pool.getConnection(function (err, con) {
+        if (err) throw err;
+        con.query(query, function (err, result) {
+            if (err) throw err;
+            res.json(result);
+        });
+    });
+});
+
 app.listen(port, () => console.log(`Listening on port ${port}`));
