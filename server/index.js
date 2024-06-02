@@ -92,4 +92,21 @@ app.get('/mostCommonCrimeByZipCode/:zipcode', (req, res) => {
     });
 });
 
+app.get('/crimeTime', (req, res) => {
+    const zipcode = req.body.zipcode;
+    console.log(city);
+    const query = `
+        SELECT city, income_range, crime_count FROM crimeTime
+        WHERE zip_code="${zipcode}"
+        ORDER BY crime_count DESC;
+    `;
+    pool.getConnection(function (err, con) {
+        if (err) throw err;
+        con.query(query, function (err, result) {
+            if (err) throw err;
+            res.json(result);
+        });
+    });
+});
+
 app.listen(port, () => console.log(`Listening on port ${port}`));
