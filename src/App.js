@@ -7,6 +7,16 @@ import './App.css';
 import axios from 'axios'; // Import axios
 import { Bar, Pie } from 'react-chartjs-2';
 import 'chart.js/auto'; // Import Chart.js
+import L from 'leaflet';
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+
+let DefaultIcon = L.icon({
+    iconUrl: icon,
+    shadowUrl: iconShadow
+});
+
+L.Marker.prototype.options.icon = DefaultIcon;
 
 const cityLocations = {
   LA: [34.0522, -118.2437],
