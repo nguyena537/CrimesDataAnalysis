@@ -43,7 +43,7 @@ function CityFilter({ onSelectCity }) {
   );
 }
 
-function ZipcodeInput({ city, onSubmitZipcode }) {
+function ZipcodeInput({ city, onSubmitZipcode, loading }) {
   const [zipcode, setZipcode] = useState("");
 
   const handleSubmit = (event) => {
@@ -63,7 +63,7 @@ function ZipcodeInput({ city, onSubmitZipcode }) {
           placeholder="Enter a zipcode"
           disabled={!city}
         />
-        <button type="submit" disabled={!city}>Submit</button>
+        <button type="submit" disabled={!city || loading}>Submit</button>
       </form>
     </div>
   );
@@ -107,17 +107,19 @@ function App() {
   const [crimeData, setCrimeData] = useState([]);
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedZipcode, setSelectedZipcode] = useState("");
+  const [loading, setLoading] = useState(false);
 
+  const getData = async () => {
+    console.log("fetching...")
+    setLoading(true)
+    const response = await fetch(`http://127.0.0.1:3000/crimesForZipcode/${selectedZipcode}`)
+    const data = await response.json()
+    setCrimeData(data);
+    setLoading(false);
+  }
   useEffect(() => {
     if (selectedCity && selectedZipcode) {
-      axios.get(`http://127.0.0.1:3000/crimesForZipcode/${selectedZipcode}`)
-        .then(response => {
-          console.log('Fetched data:', response.data);  // Add this line
-          setCrimeData(response.data);
-        })
-        .catch(error => {
-          console.error('There was an error fetching the data!', error);
-        });
+      getData();
     } else {
       setCrimeData([]);
     }
@@ -129,7 +131,8 @@ function App() {
         <h1>Crime Data Map</h1>
       </header>
       <CityFilter onSelectCity={setSelectedCity} />
-      <ZipcodeInput city={selectedCity} onSubmitZipcode={setSelectedZipcode} />
+      <ZipcodeInput city={selectedCity} onSubmitZipcode={setSelectedZipcode} loading={loading}/>
+      {loading && <h1>Loading...</h1>}
       <MapContainer center={[37.7749, -122.4194]} zoom={5} id="map">
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
