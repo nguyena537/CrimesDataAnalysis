@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const con = require('./db.js')
+const con = require('./db')
 
 const app = express();
 const port = 3000;
@@ -44,4 +44,23 @@ app.get('/mostCommonIncome', (req, res) => {
     });
 });
 
+con.connect(err => {
+    if (err) throw err;
+    console.log('Connected to MySQL database.');
+});
+
+app.get('/data', (req, res) => {
+    const sql = 'SELECT latitude, longitude, zipcode, crime_description FROM crimes';
+    con.query(sql, (err, results) => {
+      if (err) throw err;
+      const data = results.map(row => ({
+        latitude: row.latitude,
+        longitude: row.longitude,
+        zipcode: row.zipcode,
+        crime_description: row.crime_description
+      }));
+      res.json(data);
+    });
+  });
+  
 app.listen(port, () => console.log(`Listening on port ${port}`));
