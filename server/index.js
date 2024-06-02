@@ -20,15 +20,15 @@ app.get('/crimesForZipcode/:zipcode', (req, res) => {
     const zipcode = req.params.zipcode;
     const query = `
         WITH RankedCrimes AS (
-            SELECT crimeType, latitude, longitude,
+            SELECT crimeType, latitude, longitude, date, time,
                 ROW_NUMBER() OVER (PARTITION BY latitude, longitude ORDER BY crimeType) AS rn
             FROM crimes
             WHERE zip_code = ${zipcode}
         )
-        SELECT crimeType, latitude, longitude
+        SELECT crimeType, latitude, longitude, date, time
         FROM RankedCrimes
         WHERE rn = 1
-        LIMIT 500;
+        LIMIT 1000;
     `;
     pool.getConnection(function (err, con) {
         if (err) throw err;
@@ -37,7 +37,9 @@ app.get('/crimesForZipcode/:zipcode', (req, res) => {
             const data = results.map(row => ({
                 latitude: row.latitude,
                 longitude: row.longitude,
-                crime_description: row.crimeType
+                crime_description: row.crimeType,
+                time: row.time,
+                date: row.date
             }));
             res.json(data);
         });
