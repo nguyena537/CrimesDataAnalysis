@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import axios from 'axios';
 import 'leaflet/dist/leaflet.css';
-import './App.css';  // Import the CSS file
+import './App.css';
 
 const cityLocations = {
   LA: [34.0522, -118.2437],
@@ -32,7 +32,33 @@ function CityFilter({ onSelectCity }) {
   );
 }
 
-function MapWithMarkers({ crimeData, selectedCity }) {
+function ZipcodeInput({ city, onSubmitZipcode }) {
+  const [zipcode, setZipcode] = useState("");
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (zipcode) {
+      onSubmitZipcode(zipcode);
+    }
+  };
+
+  return (
+    <div className="filter-container">
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={zipcode}
+          onChange={(e) => setZipcode(e.target.value)}
+          placeholder="Enter a zipcode"
+          disabled={!city}
+        />
+        <button type="submit" disabled={!city}>Submit</button>
+      </form>
+    </div>
+  );
+}
+
+function MapWithMarkers({ crimeData, selectedCity, selectedZipcode }) {
   const map = useMap();
 
   useEffect(() => {
@@ -41,15 +67,27 @@ function MapWithMarkers({ crimeData, selectedCity }) {
     }
   }, [selectedCity, map]);
 
+  useEffect(() => {
+    console.log('Crime data for markers:', crimeData);  // Add this line to check crime data
+  }, [crimeData]);
+
   return (
     <>
-      {crimeData.map((crime, index) => (
-        <Marker key={index} position={[crime.latitude, crime.longitude]}>
-          <Popup>
-            {crime.crime_description}<br />Zip Code: {crime.zipcode}
-          </Popup>
-        </Marker>
-      ))}
+      {crimeData.map((crime, index) => {
+        const position = [crime.latitude, crime.longitude];
+        if (isNaN(position[0]) || isNaN(position[1])) {
+          console.warn(`Invalid coordinates for crime at index ${index}:`, position);
+          return null;
+        }
+        console.log(`Adding marker at ${position} for crime: ${crime.crime_description}`);
+        return (
+          <Marker key={index} position={position}>
+            <Popup>
+              {crime.crime_description}<br />Zip Code: {crime.zipcode}
+            </Popup>
+          </Marker>
+        );
+      })}
     </>
   );
 }
@@ -57,29 +95,36 @@ function MapWithMarkers({ crimeData, selectedCity }) {
 function App() {
   const [crimeData, setCrimeData] = useState([]);
   const [selectedCity, setSelectedCity] = useState("");
+  const [selectedZipcode, setSelectedZipcode] = useState("");
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:3001/data')
-      .then(response => {
-        setCrimeData(response.data);
-      })
-      .catch(error => {
-        console.error('There was an error fetching the data!', error);
-      });
-  }, []);
+    if (selectedCity && selectedZipcode) {
+      axios.get(`http://127.0.0.1:3000/crimesForZipcode/${selectedZipcode}`)
+        .then(response => {
+          console.log('Fetched data:', response.data);  // Add this line
+          setCrimeData(response.data);
+        })
+        .catch(error => {
+          console.error('There was an error fetching the data!', error);
+        });
+    } else {
+      setCrimeData([]);
+    }
+  }, [selectedCity, selectedZipcode]);
 
   return (
     <div>
       <header>
-        <h1>CS179G: Crime Data Analysis</h1>
+        <h1>Crime Data Map</h1>
       </header>
       <CityFilter onSelectCity={setSelectedCity} />
+      <ZipcodeInput city={selectedCity} onSubmitZipcode={setSelectedZipcode} />
       <MapContainer center={[37.7749, -122.4194]} zoom={5} id="map">
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        <MapWithMarkers crimeData={crimeData} selectedCity={selectedCity} />
+        <MapWithMarkers crimeData={crimeData} selectedCity={selectedCity} selectedZipcode={selectedZipcode} />
       </MapContainer>
     </div>
   );
