@@ -15,6 +15,12 @@ h1 {
   margin: 0;
 }
 
+.center-align{
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+
 .filter-container {
   display: flex;
   justify-content: center;
