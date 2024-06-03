@@ -247,4 +247,29 @@ app.get('/zipcodesForCity/:city', (req, res) => {
     
 });
 
+app.get('/crimesOverTime/:zipcode', (req, res) => {
+    try {
+        let zipcode = req.params.zipcode;
+
+        const query = `
+            SELECT year, crimeCount FROM crimesOverTime
+            WHERE zip_code="${zipcode}"
+            ORDER BY year ASC;
+        `;
+
+        pool.getConnection(function (err, con) {
+            if (err) throw err;
+            con.query(query, function (err, result) {
+                if (err) throw err;
+                res.json(result);
+            });
+        });
+    }
+    catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+    
+});
+
 app.listen(port, () => console.log(`Listening on port ${port}`));
