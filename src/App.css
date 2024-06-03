@@ -1,11 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800;900&display=swap');
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Raleway', sans-serif;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+  background-color: #2d6c8c;
 }
 
 header {
-  background-color: #333;
+  background-color: #2d6c8c;
   color: white;
   padding: 1rem;
   text-align: center;
@@ -15,18 +18,33 @@ h1 {
   margin: 0;
 }
 
+.App {
+  text-align: center;
+}
+
 .filter-container {
-  display: flex;
-  justify-content: center;
-  margin: 1rem 0;
+  margin: 1rem;
 }
 
 select {
   padding: 0.5rem;
   font-size: 1rem;
+  margin: 0.5rem;
 }
 
 #map {
   height: 600px;
   width: 100%;
+  margin-top: 1rem;
+}
+
+.loading, .error {
+  color: #ffffff;
+  margin: 1rem;
+}
+
+.plot-container {
+  margin: 1rem auto;
+  background-color: #ffffff;
+  max-width: 1000px;
 }

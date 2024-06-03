@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import React, { useState } from 'react';
+import { MapContainer, TileLayer} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-extra-markers/dist/css/leaflet.extra-markers.min.css';
 import 'leaflet-extra-markers/dist/js/leaflet.extra-markers.min.js';
@@ -7,7 +7,6 @@ import './App.css';
 import L from 'leaflet';
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-
 import IncomePlot from './components/IncomePlot.js';
 import RacePlot from './components/RacePlot.js';
 import CrimePlot from './components/CrimePlot.js';
@@ -60,7 +59,7 @@ function App() {
   const [error, setError] = useState(null);
 
   return (
-    <div>
+    <div className="App">
       <header>
         <h1>Crime Data Map</h1>
       </header>
@@ -76,8 +75,8 @@ function App() {
         setCrimeTypeData={setCrimeTypeData}
         setError={setError}
       />
-      {loading && <p>Loading...</p>}
-      {error && <p>{error}</p>}
+      {loading && <p className="loading">Loading...</p>}
+      {error && <p className="error">{error}</p>}
       <MapContainer center={[37.7749, -122.4194]} zoom={5} id="map">
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -85,9 +84,11 @@ function App() {
         />
         <MapWithMarkers crimeData={crimeData} selectedCity={selectedCity} selectedZipcode={selectedZipcode} />
       </MapContainer>
-      {crimeTypeData.length > 0 && <CrimePlot data={crimeTypeData} />}
-      {Object.keys(raceData).length > 0 && <RacePlot data={raceData} />}
-      {Object.keys(incomeData).length > 0 && <IncomePlot data={incomeData} />}
+      <div className="plot-container">
+        {crimeTypeData.length > 0 && <CrimePlot data={crimeTypeData} />}
+        {Object.keys(raceData).length > 0 && <RacePlot data={raceData} />}
+        {Object.keys(incomeData).length > 0 && <IncomePlot data={incomeData} />}
+      </div>
     </div>
   );
 }

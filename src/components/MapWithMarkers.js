@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import React, {useEffect} from 'react';
+import { Marker, Popup, useMap } from 'react-leaflet';
 
 export default function MapWithMarkers({ crimeData, selectedCity, selectedZipcode }) {
     const map = useMap();
