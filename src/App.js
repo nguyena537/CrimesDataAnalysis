@@ -175,7 +175,7 @@ function App() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (selectedCity.length > 0) {
+    if (selectedCity) {
       setLoading(true);
       setError(null);
       fetch(`http://localhost:3000/cityStatistics/${selectedCity}`)
