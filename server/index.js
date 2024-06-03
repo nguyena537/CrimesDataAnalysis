@@ -127,9 +127,8 @@ app.get('/dataForZipcode/:zipcode', (req, res) => {
 app.get('/crimeTime/:zipcode', (req, res) => {
     const zipcode = req.params.zipcode;
     const query = `
-        SELECT city, income_range, crime_count FROM crimeTime
-        WHERE zip_code="${zipcode}"
-        ORDER BY crime_count DESC;
+        SELECT * FROM crimeTime
+        WHERE zip_code="${zipcode}";
     `;
     pool.getConnection(function (err, con) {
         if (err) throw err;
@@ -159,7 +158,7 @@ app.get('/cityStatistics/:city', (req, res) => {
         if (err) throw err;
         con.query(query, function (err, result) {
             if (err) throw err;
-            res.json(result);
+            res.json(result[0]);
         });
     });
 });
