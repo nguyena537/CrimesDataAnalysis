@@ -409,8 +409,11 @@ function App() {
         )}
         {Object.keys(raceData).length > 0 && (
           <div className="chart-wrapper-race">
+            <div className="race-pie-chart">
             <div className="chart-title">Race Distribution</div>
-            <RacePlot data={raceData} />
+            
+            <RacePlot data={raceData} className="race-pie-chart"/>
+            </div>
           </div>
         )}
         {Object.keys(incomeData).length > 0 && cityData && (

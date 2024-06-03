@@ -1,7 +1,10 @@
+/* General styling for body and header */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
+  align-items: center;
+  justify-content: center;
 }
 
 header {
@@ -15,90 +18,127 @@ h1 {
   margin: 0;
 }
 
-.center-align{
+/* Center alignment for loading text */
+.center-align {
   text-align: center;
-  align-items: center;
+  display: flex;
   justify-content: center;
+  align-items: center;
 }
 
+/* Styling for filter container */
 .filter-container {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   margin: 1rem 0;
 }
 
-select {
+/* Dropdown and button styling */
+select, button {
   padding: 0.5rem;
   font-size: 1rem;
+  margin: 0.5rem 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
+/* Hover effects for dropdown and button */
+select:hover, button:hover {
+  border-color: #888;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Active state for button */
+button:active {
+  background-color: #333;
+  color: white;
+}
+
+/* Disabled state for button */
+button:disabled {
+  background-color: #ddd;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+/* Map container styling */
 #map {
   height: 600px;
   width: 100%;
 }
 
+/* Chart container styling */
 .chart-container {
-  /* display: flex;
-  flex-wrap: wrap; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   margin-top: 1rem;
-  margin: 5rem;
-  width: 97%;
-  max-width: 1400px;
-  align-items: center;
+  width: 100%;
+  /* max-width: 1400px; */
+  padding: 10px;
+  box-sizing: border-box; /* Ensures padding is included in width */
 }
 
-.chart-wrapper-race {
-  /* display: flex;
-  flex-wrap: wrap; */
+/* Chart wrappers */
+.chart-wrapper, .chart-wrapper-race, .chart-wrapper-income, .chart-wrapper-crime {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   margin-top: 1rem;
-  margin-left: 25rem;
-  margin-right: 25rem;
-  padding: 5rem;
-  width: 90%;
-  max-width: 500px;
-  align-items: center;
+  padding: 1rem;
+  width: 100%;
+  max-width: 900px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  border-radius: 4px;
 }
 
 .chart-wrapper-crime {
-  flex: 1 1 30%;
-  width: 95%;
-  max-width: 1400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   margin-top: 1rem;
-  /* margin-left: 15rem;
-  margin-right: 15rem; */
   padding: 1rem;
+  width: 100%;
+  max-width: 1200px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: white;
-  align-items: center;
-  justify-content: center;
-  /* display:flex; */
+  border-radius: 4px;
 }
 
-.chart-wrapper-income {
+.chart-wrapper-race{
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   margin-top: 1rem;
-  margin-left: 15rem;
-  margin-right: 15rem;
-  padding: 5rem;
-  width: 95%;
-  max-width: 850px;
-  align-items: center;
+  padding: 1rem;
+  width: 100%;
+  max-width: 900px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  border-radius: 4px;
 }
 
-.chart-wrapper {
+.race-pie-chart{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   margin-top: 1rem;
-  margin-left: 15rem;
-  margin-right: 15rem;
-  padding: 5rem;
-  width: 95%;
-  max-width: 850px;
+  padding: 1rem;
+  width: 100%;
+  max-width: 450px;
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+  background-color: white;
+  border-radius: 4px;
 }
+
 .chart-title {
   font-size: 1.2rem;
   font-weight: bold;
@@ -106,60 +146,23 @@ select {
   text-align: center;
 }
 
-.city-statistics-container{
-  align-content: center;
+/* Additional styling for city statistics */
+.city-statistics-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   padding: 15px;
-  margin: 20px
+  margin: 30px;
+  width: 100%;
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
 }
 
-
-.city-statistics-column-income{
+.city-statistics-column-income, .city-statistics-column-race, .city-statistics-column-crime {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 1rem;
-  padding: 5rem;
-  width: 95%;
-  max-width: 500px;
-  align-items: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.city-statistics-column-race{
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 1rem;
-  padding: 5rem;
-  width: 70%;
-  max-width: 300px;
-  align-items: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.city-statistics-column-crime{
-  flex: 1 1 30%;
-  width: 95%;
-  max-width: 700px;
-  margin: 1rem;
-  padding: 1rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background-color: white;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  
-}
-
-.city-statistics-container{
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  align-content: center;
-  justify-content: center;
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.h3 {
-  text-align: center;
+  width: 100%;
+  max-width: 650px;
 }

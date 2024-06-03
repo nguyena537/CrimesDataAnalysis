@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // Import axios
+import axios from 'axios';
 
 export default function ZipcodeInput({ city, onSubmitZipcode, loading, setLoading, setCrimeData, setRaceData, setIncomeData, setCrimeTypeData, setCrimeTimeData, setCrimeOverTimeData, setCityData, setError }) {
     const [zipcode, setZipcode] = useState("");
+    const [zipcodes, setZipcodes] = useState([]);
 
     useEffect(() => {
         if (city) {
@@ -17,12 +18,21 @@ export default function ZipcodeInput({ city, onSubmitZipcode, loading, setLoadin
                     setError('There was an error fetching the city statistics!');
                     setLoading(false);
                 });
+
+            axios.get(`http://127.0.0.1:3000/zipcodesForCity/${city}`)
+                .then(response => {
+                    setZipcodes(response.data);
+                })
+                .catch(error => {
+                    console.error('Error fetching zip codes:', error);
+                    setError('There was an error fetching the zip codes!');
+                });
         }
     }, [city]);
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        if (zipcode.length >= 5) {
+        if (zipcode) {
             setError("");
             setLoading(true);
             setCrimeData([]);
@@ -36,9 +46,9 @@ export default function ZipcodeInput({ city, onSubmitZipcode, loading, setLoadin
                 axios.get(`http://127.0.0.1:3000/crimeTypesForZipcode/${zipcode}`),
                 axios.get(`http://127.0.0.1:3000/dataForZipcode/${zipcode}`),
                 axios.get(`http://127.0.0.1:3000/crimeTime/${zipcode}`),
-                axios.get(`http://127.0.0.1:3000/crimesOverTime/${zipcode}`) // New endpoint
+                axios.get(`http://127.0.0.1:3000/crimesOverTime/${zipcode}`)
             ])
-            .then(axios.spread((crimesRes, crimeTypesRes, zipcodeDataRes, crimeTimeRes, crimeOverTimeRes) => { // Added crimeOverTimeRes
+            .then(axios.spread((crimesRes, crimeTypesRes, zipcodeDataRes, crimeTimeRes, crimeOverTimeRes) => {
                 console.log('API responses:', { crimesRes, crimeTypesRes, zipcodeDataRes, crimeTimeRes, crimeOverTimeRes });
                 var zipcodeData = zipcodeDataRes.data;
                 setCrimeData(crimesRes.data);
@@ -51,7 +61,6 @@ export default function ZipcodeInput({ city, onSubmitZipcode, loading, setLoadin
                 setIncomeData({ income: zipcodeData.income });
                 setCrimeTimeData(crimeTimeRes.data);
 
-                // Process crimes over time data
                 const crimeOverTimeData = crimeOverTimeRes.data.reduce((acc, curr) => {
                     acc[curr.year] = curr.crimeCount;
                     return acc;
@@ -76,13 +85,18 @@ export default function ZipcodeInput({ city, onSubmitZipcode, loading, setLoadin
     return (
         <div className="filter-container">
             <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
+                <select
                     value={zipcode}
                     onChange={(e) => setZipcode(e.target.value)}
-                    placeholder="Enter a zipcode"
                     disabled={!city}
-                />
+                >
+                    <option value="">Select a zipcode</option>
+                    {zipcodes.map((zip) => (
+                        <option key={zip} value={zip}>
+                            {zip}
+                        </option>
+                    ))}
+                </select>
                 <button type="submit" disabled={!city || loading}>Submit</button>
             </form>
         </div>

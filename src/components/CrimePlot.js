@@ -34,7 +34,7 @@ export default function CrimePlot({ data }) {
       x: {
         ticks: {
           font: {
-            size: 8,
+            size: 12,
           },
         },
       },

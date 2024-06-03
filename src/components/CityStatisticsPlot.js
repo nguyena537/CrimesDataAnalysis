@@ -85,8 +85,10 @@ export default function CityStatisticsPlot({ data }) {
         <Bar options={{ ...options, title: { display: true, text: 'Average Income' } }} data={avgIncomeData} />
       </div>
       <div className="city-statistics-column-race">
+        <div className="race-pie-chart">
         <h3>Racial Demographics</h3>
         <Pie options={{ ...options, title: { display: true, text: 'Racial Demographics for city' } }} data={racialDemographicsData} />
+        </div>
       </div>
     </div>
   );
