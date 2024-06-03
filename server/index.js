@@ -290,8 +290,9 @@ function exitHandler() {
 
 // do something when app is closing
 process.on('exit', exitHandler);
-
-// catches ctrl+c event
 process.on('SIGINT', exitHandler);
+process.on('SIGUSR1', exitHandler);
+process.on('SIGUSR2', exitHandler);
+process.on('uncaughtException', exitHandler);
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
