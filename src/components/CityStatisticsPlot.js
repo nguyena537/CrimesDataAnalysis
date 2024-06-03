@@ -59,7 +59,6 @@ export default function CityStatisticsPlot({ data }) {
       },
       title: {
         display: true,
-        text: 'Average Race Percentage',
         font: {
           size: 16,
         },
