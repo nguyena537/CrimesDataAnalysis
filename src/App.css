@@ -56,8 +56,8 @@ select {
   margin-left: 25rem;
   margin-right: 25rem;
   padding: 5rem;
-  width: 50%;
-  max-width: 400px;
+  width: 70%;
+  max-width: 300px;
   align-items: center;
 }
 
@@ -82,8 +82,17 @@ select {
   margin-right: 15rem;
   padding: 5rem;
   width: 95%;
-  max-width: 700px;
+  max-width: 850px;
   align-items: center;
+}
+
+.chart-wrapper {
+  margin-top: 1rem;
+  margin-left: 15rem;
+  margin-right: 15rem;
+  padding: 5rem;
+  width: 95%;
+  max-width: 850px;
 }
 .chart-title {
   font-size: 1.2rem;
