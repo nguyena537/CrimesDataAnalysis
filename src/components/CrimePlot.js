@@ -1,33 +1,65 @@
 import React from 'react';
-import { Bar, Pie } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto'; // Import Chart.js
 
 export default function CrimePlot({ data }) {
-    const options = {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'top',
-        },
-        title: {
-          display: true,
-          text: 'Crime Data Plot',
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+        labels: {
+          font: {
+            size: 14,
+          },
         },
       },
-    };
-  
-    const labels = data.map(d => d.crimeType);
-  
-    const chartData = {
-      labels,
-      datasets: [
-        {
-          label: 'Crime Count',
-          data: data.map(d => d.crimeCount),
-          backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      title: {
+        display: true,
+        text: 'Crime Data Plot',
+        font: {
+          size: 16,
         },
-      ],
-    };
-  
-    return <Bar options={options} data={chartData} />;
-  }
+      },
+      tooltip: {
+        bodyFont: {
+          size: 18,
+        },
+        titleFont: {
+          size: 20,
+        },
+      },
+    },
+    scales: {
+      x: {
+        ticks: {
+          font: {
+            size: 8,
+          },
+        },
+      },
+      y: {
+        ticks: {
+          font: {
+            size: 11,
+          },
+        },
+      },
+    },
+  };
+
+  const labels = data.map(d => d.crimeType);
+
+  const chartData = {
+    labels,
+    datasets: [
+      {
+        label: 'Crime Count',
+        data: data.map(d => d.crimeCount),
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      },
+    ],
+  };
+
+  return <Bar options={options} data={chartData} />;
+}

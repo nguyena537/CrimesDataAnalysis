@@ -85,9 +85,26 @@ function App() {
         />
         <MapWithMarkers crimeData={crimeData} selectedCity={selectedCity} selectedZipcode={selectedZipcode} />
       </MapContainer>
-      {crimeTypeData.length > 0 && <CrimePlot data={crimeTypeData} />}
-      {Object.keys(raceData).length > 0 && <RacePlot data={raceData} />}
-      {Object.keys(incomeData).length > 0 && <IncomePlot data={incomeData} />}
+      <div className="chart-container">
+        {crimeTypeData.length > 0 && (
+          <div className="chart-wrapper">
+            <div className="chart-title">Crime Type Distribution</div>
+            <CrimePlot data={crimeTypeData} />
+          </div>
+        )}
+        {Object.keys(raceData).length > 0 && (
+          <div className="chart-wrapper-race">
+            <div className="chart-title">Race Distribution</div>
+            <RacePlot data={raceData} />
+          </div>
+        )}
+        {Object.keys(incomeData).length > 0 && (
+          <div className="chart-wrapper">
+            <div className="chart-title">Income Distribution</div>
+            <IncomePlot data={incomeData} />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
