@@ -34,6 +34,7 @@ app.get('/crimesForZipcode/:zipcode', (req, res) => {
         pool.getConnection(function (err, con) {
             if (err) throw err;
             con.query(query, function (err, results) {
+                con.release();
                 if (err) throw err;
                 const data = results.map(row => ({
                     latitude: row.latitude,
@@ -44,6 +45,7 @@ app.get('/crimesForZipcode/:zipcode', (req, res) => {
                 }));
                 res.json(data);
             });
+            
         });
     }
     catch (err) {
@@ -72,6 +74,7 @@ app.get('/mostCommonIncome/:city', (req, res) => {
         pool.getConnection(function (err, con) {
             if (err) throw err;
             con.query(query, function (err, result, fields) {
+                con.release();
                 if (err) throw err;
                 res.json(result);
             });
@@ -132,10 +135,12 @@ app.get('/dataForZipcode/:zipcode', (req, res) => {
         pool.getConnection(function (err, con) {
             if (err) throw err;
             con.query(query, function (err, result) {
+                con.release();
                 if (err) throw err;
                 res.json(result[0]);
             });
         });
+        
     }
     catch (err) {
         console.error(err.message);
@@ -153,6 +158,7 @@ app.get('/crimeTime/:zipcode', (req, res) => {
         pool.getConnection(function (err, con) {
             if (err) throw err;
             con.query(query, function (err, result) {
+                con.release();
                 if (err) throw err;
                 res.json(result);
             });
@@ -183,6 +189,7 @@ app.get('/cityStatistics/:city', (req, res) => {
         pool.getConnection(function (err, con) {
             if (err) throw err;
             con.query(query, function (err, result) {
+                con.release();
                 if (err) throw err;
                 res.json(result[0]);
             });
@@ -204,6 +211,7 @@ app.get('/crimeTypesForZipcode/:zipcode', (req, res) => {
         pool.getConnection(function (err, con) {
             if (err) throw err;
             con.query(query, function (err, results) {
+                con.release();
                 if (err) throw err;
                 res.json(results);
             });
@@ -235,6 +243,7 @@ app.get('/zipcodesForCity/:city', (req, res) => {
         pool.getConnection(function (err, con) {
             if (err) throw err;
             con.query(query, function (err, result) {
+                con.release();
                 if (err) throw err;
                 res.json(result.map(z => z.zip_code));
             });
@@ -260,6 +269,7 @@ app.get('/crimesOverTime/:zipcode', (req, res) => {
         pool.getConnection(function (err, con) {
             if (err) throw err;
             con.query(query, function (err, result) {
+                con.release();
                 if (err) throw err;
                 res.json(result);
             });
