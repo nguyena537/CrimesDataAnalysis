@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { MapContainer, TileLayer} from 'react-leaflet';
+import React, { useState, useEffect } from 'react';
+import { MapContainer, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-extra-markers/dist/css/leaflet.extra-markers.min.css';
 import 'leaflet-extra-markers/dist/js/leaflet.extra-markers.min.js';
@@ -10,6 +10,8 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import IncomePlot from './components/IncomePlot.js';
 import RacePlot from './components/RacePlot.js';
 import CrimePlot from './components/CrimePlot.js';
+import CrimeOverTimePlot from './components/CrimeOverTimePlot.js';
+import CrimeTimeOfDayPlot from './components/CrimeTimeOfDayPlot.js';
 import ZipcodeInput from './components/ZipcodeInput.js';
 import MapWithMarkers from './components/MapWithMarkers.js';
 
@@ -53,15 +55,35 @@ function App() {
   const [crimeTypeData, setCrimeTypeData] = useState([]);
   const [raceData, setRaceData] = useState({});
   const [incomeData, setIncomeData] = useState({});
+  const [cityData, setCityData] = useState(null);
+  const [crimeTimeData, setCrimeTimeData] = useState([]);
+  const [crimeOverTimeData, setCrimeOverTimeData] = useState([]);
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedZipcode, setSelectedZipcode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  useEffect(() => {
+    if (selectedCity) {
+      setLoading(true);
+      setError(null);
+      fetch(`http://localhost:3000/cityStatistics/${selectedCity}`)
+        .then(response => response.json())
+        .then(data => {
+          setCityData(data);
+          setLoading(false);
+        })
+        .catch(error => {
+          setError('Error fetching city statistics');
+          setLoading(false);
+        });
+    }
+  }, [selectedCity]);
+
   return (
     <div className="App">
       <header>
-        <h1>Crime Data Map</h1>
+        <h1>Crime Data Visualized</h1>
       </header>
       <CityFilter onSelectCity={setSelectedCity} />
       <ZipcodeInput 
@@ -73,6 +95,8 @@ function App() {
         setRaceData={setRaceData}
         setIncomeData={setIncomeData}
         setCrimeTypeData={setCrimeTypeData}
+        setCrimeTimeData={setCrimeTimeData}
+        setCrimeOverTimeData={setCrimeOverTimeData}
         setError={setError}
       />
       {loading && <p className="loading">Loading...</p>}
@@ -85,9 +109,31 @@ function App() {
         <MapWithMarkers crimeData={crimeData} selectedCity={selectedCity} selectedZipcode={selectedZipcode} />
       </MapContainer>
       <div className="plot-container">
-        {crimeTypeData.length > 0 && <CrimePlot data={crimeTypeData} />}
-        {Object.keys(raceData).length > 0 && <RacePlot data={raceData} />}
-        {Object.keys(incomeData).length > 0 && <IncomePlot data={incomeData} />}
+        {crimeTypeData.length > 0 && (
+          <div className="plot-card">
+            <CrimePlot data={crimeTypeData} />
+          </div>
+        )}
+        {Object.keys(raceData).length > 0 && (
+          <div className="plot-card">
+            <RacePlot data={raceData} />
+          </div>
+        )}
+        {Object.keys(incomeData).length > 0 && cityData && (
+          <div className="plot-card">
+            <IncomePlot data={{ ...incomeData, avg_income: cityData.avg_income }} />
+          </div>
+        )}
+        {Object.keys(crimeOverTimeData).length > 0 && (
+          <div className="plot-card">
+            <CrimeOverTimePlot data={crimeOverTimeData} />
+          </div>
+        )}
+        {crimeTimeData.length > 0 && (
+          <div className="plot-card">
+            <CrimeTimeOfDayPlot data={crimeTimeData} />
+          </div>
+        )}
       </div>
     </div>
   );

@@ -10,32 +10,65 @@ body {
 header {
   background-color: #2d6c8c;
   color: white;
-  padding: 1rem;
+  padding: 1.5rem;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+header img {
+  height: 40px;
+  margin-right: 1rem;
 }
 
 h1 {
   margin: 0;
+  font-weight: 700;
 }
 
 .App {
   text-align: center;
+  padding: 2rem;
 }
 
 .filter-container {
   margin: 1rem;
 }
 
-select {
+select, input[type="text"], button {
   padding: 0.5rem;
   font-size: 1rem;
   margin: 0.5rem;
+  font-family: 'Roboto', sans-serif;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+select:focus, input[type="text"]:focus, button:focus {
+  border-color: #2d6c8c;
+}
+
+button {
+  background-color: #2d6c8c;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #255a73;
 }
 
 #map {
   height: 600px;
   width: 100%;
   margin-top: 1rem;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .loading, .error {
@@ -45,6 +78,27 @@ select {
 
 .plot-container {
   margin: 1rem auto;
-  background-color: #ffffff;
   max-width: 1000px;
+}
+
+.plot-card {
+  background-color: white;
+  padding: 1rem;
+  margin: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+  .App {
+    padding: 1rem;
+  }
+
+  header {
+    padding: 1rem;
+  }
+
+  #map {
+    height: 400px;
+  }
 }
