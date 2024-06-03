@@ -1,34 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-export default function ZipcodeInput({ city, onSubmitZipcode, loading, setLoading, setCrimeData, setRaceData, setIncomeData, setCrimeTypeData, setCrimeTimeData, setCrimeOverTimeData, setCityData, setError }) {
+export default function ZipcodeInput({ city, onSubmitZipcode, loading, setLoading, setCrimeData, setRaceData, setIncomeData, setCrimeTypeData, setCrimeTimeData, setCrimeOverTimeData, setCityData, setError, setCrimesVsIncomeData, zipcodes }) {
     const [zipcode, setZipcode] = useState("");
-    const [zipcodes, setZipcodes] = useState([]);
-
-    useEffect(() => {
-        if (city) {
-            setLoading(true);
-            axios.get(`http://127.0.0.1:3000/cityStatistics/${city}`)
-                .then(response => {
-                    setCityData(response.data);
-                    setLoading(false);
-                })
-                .catch(error => {
-                    console.error('Error fetching city statistics:', error);
-                    setError('There was an error fetching the city statistics!');
-                    setLoading(false);
-                });
-
-            axios.get(`http://127.0.0.1:3000/zipcodesForCity/${city}`)
-                .then(response => {
-                    setZipcodes(response.data);
-                })
-                .catch(error => {
-                    console.error('Error fetching zip codes:', error);
-                    setError('There was an error fetching the zip codes!');
-                });
-        }
-    }, [city]);
 
     const handleSubmit = (event) => {
         event.preventDefault();

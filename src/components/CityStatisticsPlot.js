@@ -1,14 +1,15 @@
 import React from 'react';
 import { Bar, Pie } from 'react-chartjs-2';
 import 'chart.js/auto'; // Import Chart.js
+import CrimesVsIncomePlot from './CrimesVsIncomePlot';
 
-export default function CityStatisticsPlot({ data }) {
+export default function CityStatisticsPlot({ cityData, crimesVsIncomeData }) {
   const crimeCountData = {
     labels: ['Crime Count'],
     datasets: [
       {
         label: 'Crime Count',
-        data: [data.crime_count],
+        data: [cityData.crime_count],
         backgroundColor: 'rgba(255, 99, 132, 0.6)',
       },
     ],
@@ -19,14 +20,26 @@ export default function CityStatisticsPlot({ data }) {
     datasets: [
       {
         label: 'Average Income',
-        data: [data.avg_income],
+        data: [cityData.avg_income],
         backgroundColor: 'rgba(54, 162, 235, 0.6)',
       },
     ],
   };
 
+  const crimesVsIncomeLabels = crimesVsIncomeData.map(d => d.income_range);
+  const crimesVsIncomeChartData = {
+    crimesVsIncomeLabels,
+    datasets: [
+      {
+        label: 'Crime Count',
+        data: crimesVsIncomeData.map(d => d.crime_count),
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      },
+    ],
+  };
+
   // Calculate the total percentage of known races
-  const totalPercentage = data.avg_race_white + data.avg_race_black + data.avg_race_asian;
+  const totalPercentage = cityData.avg_race_white + cityData.avg_race_black + cityData.avg_race_asian;
   
   // Calculate the percentage for 'Other'
   const otherPercentage = 100 - totalPercentage;
@@ -35,7 +48,7 @@ export default function CityStatisticsPlot({ data }) {
     datasets: [
       {
         label: 'Average Racial Demographics',
-        data: [data.avg_race_white, data.avg_race_black, data.avg_race_asian, otherPercentage],
+        data: [cityData.avg_race_white, cityData.avg_race_black, cityData.avg_race_asian, otherPercentage],
         backgroundColor: [
           'rgba(75, 192, 192, 0.6)',
           'rgba(255, 159, 64, 0.6)',
@@ -89,6 +102,10 @@ export default function CityStatisticsPlot({ data }) {
         <h3>Racial Demographics</h3>
         <Pie options={{ ...options, title: { display: true, text: 'Racial Demographics for city' } }} data={racialDemographicsData} />
         </div>
+      </div>
+      <div className="city-statistics-column-income">
+        <h3>Crime Count Vs. Income Range</h3>
+        <CrimesVsIncomePlot data={crimesVsIncomeData}/>
       </div>
     </div>
   );
