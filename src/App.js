@@ -236,7 +236,7 @@ function App() {
       </MapContainer>
       <div className="chart-container">
         {crimeTypeData.length > 0 && (
-          <div className="chart-wrapper">
+          <div className="chart-wrapper-crime">
             <div className="chart-title">Crime Type Distribution</div>
             <CrimePlot data={crimeTypeData} />
           </div>
@@ -248,7 +248,7 @@ function App() {
           </div>
         )}
         {Object.keys(incomeData).length > 0 && cityData && (
-          <div className="chart-wrapper">
+          <div className="chart-wrapper-income">
             <div className="chart-title">Income Distribution</div>
             <IncomePlot data={{ ...incomeData, avg_income: cityData.avg_income }} />
           </div>

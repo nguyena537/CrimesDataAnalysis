@@ -53,15 +53,15 @@ select {
   flex-wrap: wrap;
   justify-content: center;
   margin-top: 1rem;
-  margin-left: 15rem;
-  margin-right: 15rem;
+  margin-left: 25rem;
+  margin-right: 25rem;
   padding: 5rem;
-  width: 95%;
-  max-width: 700px;
+  width: 50%;
+  max-width: 400px;
   align-items: center;
 }
 
-.chart-wrapper {
+.chart-wrapper-crime {
   flex: 1 1 30%;
   width: 95%;
   max-width: 1400px;
@@ -73,6 +73,18 @@ select {
   justify-content: center;
 }
 
+.chart-wrapper-income {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 1rem;
+  margin-left: 15rem;
+  margin-right: 15rem;
+  padding: 5rem;
+  width: 95%;
+  max-width: 700px;
+  align-items: center;
+}
 .chart-title {
   font-size: 1.2rem;
   font-weight: bold;
