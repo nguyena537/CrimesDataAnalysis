@@ -14,7 +14,6 @@ import CrimePlot from './components/CrimePlot.js';
 import ZipcodeInput from './components/ZipcodeInput.js';
 import MapWithMarkers from './components/MapWithMarkers.js';
 
-
 let DefaultIcon = L.icon({
     iconUrl: icon,
     shadowUrl: iconShadow
