@@ -12,6 +12,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 pool.getConnection(function (err, con) {
+    con.release();
     if (err) throw err;
     console.log("Connected to MySQL database!");
 });
@@ -281,5 +282,17 @@ app.get('/crimesOverTime/:zipcode', (req, res) => {
     }
     
 });
+
+function exitHandler() {
+    pool.end();
+    process.exit();
+}
+
+// do something when app is closing
+process.on('exit', exitHandler);
+process.on('SIGINT', exitHandler);
+process.on('SIGUSR1', exitHandler);
+process.on('SIGUSR2', exitHandler);
+process.on('uncaughtException', exitHandler);
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
