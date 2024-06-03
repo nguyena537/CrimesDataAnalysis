@@ -49,28 +49,32 @@ select {
 }
 
 .chart-wrapper-race {
-  display: flex;
-  flex-wrap: wrap;
+  /* display: flex;
+  flex-wrap: wrap; */
   justify-content: center;
   margin-top: 1rem;
   margin-left: 25rem;
   margin-right: 25rem;
   padding: 5rem;
-  width: 70%;
-  max-width: 300px;
+  width: 90%;
+  max-width: 500px;
   align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .chart-wrapper-crime {
   flex: 1 1 30%;
   width: 95%;
   max-width: 1400px;
-  margin: 1rem;
+  margin-top: 1rem;
+  /* margin-left: 15rem;
+  margin-right: 15rem; */
   padding: 1rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: white;
   align-items: center;
   justify-content: center;
+  /* display:flex; */
 }
 
 .chart-wrapper-income {
@@ -84,6 +88,7 @@ select {
   width: 95%;
   max-width: 850px;
   align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .chart-wrapper {
@@ -98,5 +103,63 @@ select {
   font-size: 1.2rem;
   font-weight: bold;
   margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.city-statistics-container{
+  align-content: center;
+  justify-content: center;
+  padding: 15px;
+  margin: 20px
+}
+
+
+.city-statistics-column-income{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 1rem;
+  padding: 5rem;
+  width: 95%;
+  max-width: 500px;
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.city-statistics-column-race{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 1rem;
+  padding: 5rem;
+  width: 70%;
+  max-width: 300px;
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.city-statistics-column-crime{
+  flex: 1 1 30%;
+  width: 95%;
+  max-width: 700px;
+  margin: 1rem;
+  padding: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  align-items: center;
+  justify-content: center;
+  
+}
+
+.city-statistics-container{
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  align-content: center;
+  justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.h3 {
   text-align: center;
 }
