@@ -139,7 +139,6 @@
 //     );
 // }
 
-
 import React, { useState } from 'react';
 import axios from 'axios'; // Import axios
 
@@ -160,10 +159,11 @@ export default function ZipcodeInput({ city, onSubmitZipcode, loading, setLoadin
                 axios.get(`http://127.0.0.1:3000/crimesForZipcode/${zipcode}`),
                 axios.get(`http://127.0.0.1:3000/crimeTypesForZipcode/${zipcode}`),
                 axios.get(`http://127.0.0.1:3000/dataForZipcode/${zipcode}`),
-                axios.get(`http://127.0.0.1:3000/crimeTime/${zipcode}`)
+                axios.get(`http://127.0.0.1:3000/crimeTime/${zipcode}`),
+                axios.get(`http://127.0.0.1:3000/crimesOverTime/${zipcode}`) // New endpoint
             ])
-            .then(axios.spread((crimesRes, crimeTypesRes, zipcodeDataRes, crimeTimeRes) => {
-                console.log('API responses:', { crimesRes, crimeTypesRes, zipcodeDataRes, crimeTimeRes });
+            .then(axios.spread((crimesRes, crimeTypesRes, zipcodeDataRes, crimeTimeRes, crimeOverTimeRes) => { // Added crimeOverTimeRes
+                console.log('API responses:', { crimesRes, crimeTypesRes, zipcodeDataRes, crimeTimeRes, crimeOverTimeRes });
                 var zipcodeData = zipcodeDataRes.data;
                 setCrimeData(crimesRes.data);
                 setCrimeTypeData(crimeTypesRes.data);
@@ -175,16 +175,13 @@ export default function ZipcodeInput({ city, onSubmitZipcode, loading, setLoadin
                 setIncomeData({ income: zipcodeData.income });
                 setCrimeTimeData(crimeTimeRes.data);
 
-                // Calculate crime over time data
-                const crimeOverTime = crimesRes.data.reduce((acc, curr) => {
-                    const year = new Date(curr.date).getFullYear();
-                    if (!acc[year]) {
-                      acc[year] = 0;
-                    }
-                    acc[year]++;
+                // Process crimes over time data
+                const crimeOverTimeData = crimeOverTimeRes.data.reduce((acc, curr) => {
+                    acc[curr.year] = curr.crimeCount;
                     return acc;
                 }, {});
-                setCrimeOverTimeData(crimeOverTime);
+                console.log('Crime Over Time:', crimeOverTimeData);
+                setCrimeOverTimeData(crimeOverTimeData);
                 setLoading(false);
             }))
             .catch(error => {
@@ -215,3 +212,4 @@ export default function ZipcodeInput({ city, onSubmitZipcode, loading, setLoadin
         </div>
     );
 }
+
