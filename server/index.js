@@ -122,7 +122,7 @@ app.get('/mostCommonIncome/:city', (req, res) => {
 //     });
 //   });
 
-app.get('/mostCommonCrimeByZipCode/:zipcode', (req, res) => {
+app.get('/dataForZipcode/:zipcode', (req, res) => {
     try {
         const zipcode = req.params.zipcode;
         const query = `
