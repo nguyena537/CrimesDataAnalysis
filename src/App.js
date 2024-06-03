@@ -171,7 +171,7 @@ function App() {
   const [cityData, setCityData] = useState(null);
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedZipcode, setSelectedZipcode] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -190,23 +190,6 @@ function App() {
         });
     }
   }, [selectedCity]);
-
-  useEffect(() => {
-    if (selectedZipcode) {
-      setLoading(true);
-      setError(null);
-      fetch(`http://localhost:3000/dataForZipcode/${selectedZipcode}`)
-        .then(response => response.json())
-        .then(data => {
-          setIncomeData({ income: data.income });
-          setLoading(false);
-        })
-        .catch(error => {
-          setError('Error fetching data for zipcode');
-          setLoading(false);
-        });
-    }
-  }, [selectedZipcode]);
 
   return (
     <div>
