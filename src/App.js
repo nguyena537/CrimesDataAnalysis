@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import axios from 'axios';
 import 'leaflet/dist/leaflet.css';
+import 'leaflet-extra-markers/dist/css/leaflet.extra-markers.min.css';
+import 'leaflet-extra-markers/dist/js/leaflet.extra-markers.min.js';
 import './App.css';
 import L from 'leaflet';
-
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+
+import IncomePlot from './components/IncomePlot.js';
+import RacePlot from './components/RacePlot.js';
+import CrimePlot from './components/CrimePlot.js';
+import ZipcodeInput from './components/ZipcodeInput.js';
+import MapWithMarkers from './components/MapWithMarkers.js';
 
 let DefaultIcon = L.icon({
     iconUrl: icon,
@@ -43,87 +49,15 @@ function CityFilter({ onSelectCity }) {
   );
 }
 
-function ZipcodeInput({ city, onSubmitZipcode, loading }) {
-  const [zipcode, setZipcode] = useState("");
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (zipcode) {
-      onSubmitZipcode(zipcode);
-    }
-  };
-
-  return (
-    <div className="filter-container">
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={zipcode}
-          onChange={(e) => setZipcode(e.target.value)}
-          placeholder="Enter a zipcode"
-          disabled={!city}
-        />
-        <button type="submit" disabled={!city || loading}>Submit</button>
-      </form>
-    </div>
-  );
-}
-
-function MapWithMarkers({ crimeData, selectedCity, selectedZipcode }) {
-  const map = useMap();
-
-  useEffect(() => {
-    if (selectedCity && cityLocations[selectedCity]) {
-      map.setView(cityLocations[selectedCity], 12);
-    }
-  }, [selectedCity, map]);
-
-  useEffect(() => {
-    console.log('Crime data for markers:', crimeData);  // Add this line to check crime data
-  }, [crimeData]);
-
-  return (
-    <>
-      {crimeData.map((crime, index) => {
-        const position = [crime.latitude, crime.longitude];
-        if (isNaN(position[0]) || isNaN(position[1])) {
-          console.warn(`Invalid coordinates for crime at index ${index}:`, position);
-          return null;
-        }
-        console.log(`Adding marker at ${position} for crime: ${crime.crime_description}`);
-        return (
-          <Marker key={index} position={position}>
-            <Popup>
-              {crime.crime_description}<br />Zip Code: {crime.zipcode}
-            </Popup>
-          </Marker>
-        );
-      })}
-    </>
-  );
-}
-
 function App() {
   const [crimeData, setCrimeData] = useState([]);
+  const [crimeTypeData, setCrimeTypeData] = useState([]);
+  const [raceData, setRaceData] = useState({});
+  const [incomeData, setIncomeData] = useState({});
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedZipcode, setSelectedZipcode] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const getData = async () => {
-    console.log("fetching...")
-    setLoading(true)
-    const response = await fetch(`http://127.0.0.1:3000/crimesForZipcode/${selectedZipcode}`)
-    const data = await response.json()
-    setCrimeData(data);
-    setLoading(false);
-  }
-  useEffect(() => {
-    if (selectedCity && selectedZipcode) {
-      getData();
-    } else {
-      setCrimeData([]);
-    }
-  }, [selectedCity, selectedZipcode]);
+  const [error, setError] = useState(null);
 
   return (
     <div>
@@ -131,8 +65,19 @@ function App() {
         <h1>Crime Data Map</h1>
       </header>
       <CityFilter onSelectCity={setSelectedCity} />
-      <ZipcodeInput city={selectedCity} onSubmitZipcode={setSelectedZipcode} loading={loading}/>
-      {loading && <h1>Loading...</h1>}
+      <ZipcodeInput 
+        city={selectedCity} 
+        onSubmitZipcode={setSelectedZipcode} 
+        loading={loading}
+        setLoading={setLoading}
+        setCrimeData={setCrimeData}
+        setRaceData={setRaceData}
+        setIncomeData={setIncomeData}
+        setCrimeTypeData={setCrimeTypeData}
+        setError={setError}
+      />
+      {loading && <p>Loading...</p>}
+      {error && <p>{error}</p>}
       <MapContainer center={[37.7749, -122.4194]} zoom={5} id="map">
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -140,6 +85,9 @@ function App() {
         />
         <MapWithMarkers crimeData={crimeData} selectedCity={selectedCity} selectedZipcode={selectedZipcode} />
       </MapContainer>
+      {crimeTypeData.length > 0 && <CrimePlot data={crimeTypeData} />}
+      {Object.keys(raceData).length > 0 && <RacePlot data={raceData} />}
+      {Object.keys(incomeData).length > 0 && <IncomePlot data={incomeData} />}
     </div>
   );
 }
