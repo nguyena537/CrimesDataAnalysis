@@ -19,8 +19,16 @@ pool.getConnection(function (err, con) {
 app.get('/crimesForZipcode/:zipcode', (req, res) => {
     const zipcode = req.params.zipcode;
     const query = `
-        SELECT crimeType, longitude, latitude, income FROM crimes
-        WHERE zip_code = ${zipcode};
+        WITH RankedCrimes AS (
+            SELECT crimeType, latitude, longitude, date, time,
+                ROW_NUMBER() OVER (PARTITION BY latitude, longitude ORDER BY crimeType) AS rn
+            FROM crimes
+            WHERE zip_code = ${zipcode}
+        )
+        SELECT crimeType, latitude, longitude, date, time
+        FROM RankedCrimes
+        WHERE rn = 1
+        LIMIT 1000;
     `;
     pool.getConnection(function (err, con) {
         if (err) throw err;
@@ -29,7 +37,9 @@ app.get('/crimesForZipcode/:zipcode', (req, res) => {
             const data = results.map(row => ({
                 latitude: row.latitude,
                 longitude: row.longitude,
-                crime_description: row.crimeType
+                crime_description: row.crimeType,
+                time: row.time,
+                date: row.date
             }));
             res.json(data);
         });
@@ -59,21 +69,6 @@ app.get('/mostCommonIncome/:city', (req, res) => {
         });
     });
 });
-
-app.get('/raceDataForZipcode/:zipcode', (req, res) => {
-    const zipcode = req.params.zipcode;
-    const query = `
-      SELECT race_white, race_black, race_asian FROM crimes
-      WHERE zip_code = ${zipcode} LIMIT 1;
-    `;
-    pool.getConnection(function (err, con) {
-      if (err) throw err;
-      con.query(query, function (err, result) {
-        if (err) throw err;
-        res.json(result[0]);
-      });
-    });
-  });
 
 // // New route to get zipcodes with the highest percentage of each race and their most common crime
 // app.get('/highestRacePercentage/:city', (req, res) => {
@@ -114,7 +109,7 @@ app.get('/raceDataForZipcode/:zipcode', (req, res) => {
 //     });
 //   });
 
-app.get('/mostCommonCrimeByZipCode/:zipcode', (req, res) => {
+app.get('/dataForZipcode/:zipcode', (req, res) => {
     const zipcode = req.params.zipcode;
     const query = `
         SELECT * FROM mostCommonCrimeByZipCode
@@ -124,7 +119,7 @@ app.get('/mostCommonCrimeByZipCode/:zipcode', (req, res) => {
         if (err) throw err;
         con.query(query, function (err, result) {
             if (err) throw err;
-            res.json(result);
+            res.json(result[0]);
         });
     });
 });
@@ -172,29 +167,15 @@ app.get('/cityStatistics/:city', (req, res) => {
 app.get('/crimeTypesForZipcode/:zipcode', (req, res) => {
     const zipcode = req.params.zipcode;
     const query = `
-        SELECT crimeType, COUNT(crimeType) as count FROM crimes
+        SELECT crimeType, crimeCount FROM crimeTypesForZipcode
         WHERE zip_code = ${zipcode}
-        GROUP BY crimeType;`;
+        ORDER BY crimeCount DESC`;
     pool.getConnection(function (err, con) {
         if (err) throw err;
         con.query(query, function (err, results) {
             if (err) throw err;
             res.json(results);
         });
-    });
-});
-
-app.get('/incomeDataForZipcode/:zipcode', (req, res) => {
-    const zipcode = req.params.zipcode;
-    const query = `
-      SELECT income FROM crimes
-      WHERE zip_code = ${zipcode} LIMIT 1;`;
-    pool.getConnection(function (err, con) {
-      if (err) throw err;
-      con.query(query, function (err, result) {
-        if (err) throw err;
-        res.json(result[0]);
-      });
     });
 });
 

@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-extra-markers/dist/css/leaflet.extra-markers.min.css';
 import 'leaflet-extra-markers/dist/js/leaflet.extra-markers.min.js';
 import './App.css';
-import axios from 'axios'; // Import axios
-import { Bar, Pie } from 'react-chartjs-2';
-import 'chart.js/auto'; // Import Chart.js
 import L from 'leaflet';
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+
+import IncomePlot from './components/IncomePlot.js';
+import RacePlot from './components/RacePlot.js';
+import CrimePlot from './components/CrimePlot.js';
+import ZipcodeInput from './components/ZipcodeInput.js';
+import MapWithMarkers from './components/MapWithMarkers.js';
+
 
 let DefaultIcon = L.icon({
     iconUrl: icon,
@@ -46,130 +50,6 @@ function CityFilter({ onSelectCity }) {
   );
 }
 
-function ZipcodeInput({ city, onSubmitZipcode }) {
-  const [zipcode, setZipcode] = useState("");
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (zipcode) {
-      onSubmitZipcode(zipcode);
-    }
-  };
-
-  return (
-    <div className="filter-container">
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={zipcode}
-          onChange={(e) => setZipcode(e.target.value)}
-          placeholder="Enter a zipcode"
-          disabled={!city}
-        />
-        <button type="submit" disabled={!city}>Submit</button>
-      </form>
-    </div>
-  );
-}
-
-function MapWithMarkers({ selectedCity }) {
-  const map = useMap();
-
-  useEffect(() => {
-    if (selectedCity && cityLocations[selectedCity]) {
-      map.setView(cityLocations[selectedCity], 12);
-    }
-  }, [selectedCity, map]);
-
-  return null; // No markers for now
-}
-
-function CrimePlot({ data }) {
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: 'Crime Data Plot',
-      },
-    },
-  };
-
-  const labels = data.map(d => d.crimeType);
-
-  const chartData = {
-    labels,
-    datasets: [
-      {
-        label: 'Crime Count',
-        data: data.map(d => d.count),
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-      },
-    ],
-  };
-
-  return <Bar options={options} data={chartData} />;
-}
-
-function RacePlot({ data }) {
-  const chartData = {
-    labels: ['White', 'Black', 'Asian'],
-    datasets: [
-      {
-        label: 'Race Percentage',
-        data: [data.race_white, data.race_black, data.race_asian],
-        backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(255, 159, 64, 0.6)', 'rgba(153, 102, 255, 0.6)'],
-      },
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: 'Race Percentage',
-      },
-    },
-  };
-
-  return <Pie options={options} data={chartData} />;
-}
-
-function IncomePlot({ data }) {
-  const chartData = {
-    labels: ['Income'],
-    datasets: [
-      {
-        label: 'Income',
-        data: [data.income],
-        backgroundColor: 'rgba(54, 162, 235, 0.6)',
-      },
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: 'Income Data',
-      },
-    },
-  };
-
-  return <Bar options={options} data={chartData} />;
-}
-
 function App() {
   const [crimeData, setCrimeData] = useState([]);
   const [crimeTypeData, setCrimeTypeData] = useState([]);
@@ -180,44 +60,23 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (selectedCity && selectedZipcode) {
-      setLoading(true);
-      
-      axios.all([
-        axios.get(`http://127.0.0.1:3000/crimesForZipcode/${selectedZipcode}`),
-        axios.get(`http://127.0.0.1:3000/crimeTypesForZipcode/${selectedZipcode}`),
-        axios.get(`http://127.0.0.1:3000/raceDataForZipcode/${selectedZipcode}`),
-        axios.get(`http://127.0.0.1:3000/incomeDataForZipcode/${selectedZipcode}`)
-      ])
-      .then(axios.spread((crimesRes, crimeTypesRes, raceRes, incomeRes) => {
-        console.log('API responses:', { crimesRes, crimeTypesRes, raceRes, incomeRes });
-        setCrimeData(crimesRes.data);
-        setCrimeTypeData(crimeTypesRes.data);
-        setRaceData(raceRes.data);
-        setIncomeData(incomeRes.data);
-        setLoading(false);
-      }))
-      .catch(error => {
-        console.error('Error fetching data:', error);
-        setError('There was an error fetching the data!');
-        setLoading(false);
-      });
-    } else {
-      setCrimeData([]);
-      setCrimeTypeData([]);
-      setRaceData({});
-      setIncomeData({});
-    }
-  }, [selectedCity, selectedZipcode]);
-
   return (
     <div>
       <header>
         <h1>Crime Data Map</h1>
       </header>
       <CityFilter onSelectCity={setSelectedCity} />
-      <ZipcodeInput city={selectedCity} onSubmitZipcode={setSelectedZipcode} />
+      <ZipcodeInput 
+        city={selectedCity} 
+        onSubmitZipcode={setSelectedZipcode} 
+        loading={loading}
+        setLoading={setLoading}
+        setCrimeData={setCrimeData}
+        setRaceData={setRaceData}
+        setIncomeData={setIncomeData}
+        setCrimeTypeData={setCrimeTypeData}
+        setError={setError}
+      />
       {loading && <p>Loading...</p>}
       {error && <p>{error}</p>}
       <MapContainer center={[37.7749, -122.4194]} zoom={5} id="map">
@@ -225,7 +84,7 @@ function App() {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        <MapWithMarkers selectedCity={selectedCity} />
+        <MapWithMarkers crimeData={crimeData} selectedCity={selectedCity} selectedZipcode={selectedZipcode} />
       </MapContainer>
       {crimeTypeData.length > 0 && <CrimePlot data={crimeTypeData} />}
       {Object.keys(raceData).length > 0 && <RacePlot data={raceData} />}
