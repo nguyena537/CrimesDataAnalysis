@@ -3,21 +3,24 @@ import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto'; // Import Chart.js
 
 export default function CrimeTimeOfDayPlot({ data }) {
+  // Extract the data for plotting
   const timesOfDay = ['Morning', 'Afternoon', 'Evening', 'Night'];
-  const crimeCounts = timesOfDay.map(time => data[time.toLowerCase()] || 0);
+  const crimeCounts = timesOfDay.map(time => {
+    const entry = data.find(d => d.Time_of_day === time);
+    return entry ? entry.count : 0;
+  });
+  const crimeTypes = timesOfDay.map(time => {
+    const entry = data.find(d => d.Time_of_day === time);
+    return entry ? entry.crimeType : 'No Data';
+  });
 
   const chartData = {
     labels: timesOfDay,
     datasets: [
       {
-        label: 'Crimes',
+        label: 'Crime Count',
         data: crimeCounts,
-        backgroundColor: [
-          'rgba(75, 192, 192, 0.6)',
-          'rgba(255, 159, 64, 0.6)',
-          'rgba(153, 102, 255, 0.6)',
-          'rgba(255, 205, 86, 0.6)',
-        ],
+        backgroundColor: 'rgba(75, 192, 192, 0.6)',
       },
     ],
   };
@@ -35,12 +38,17 @@ export default function CrimeTimeOfDayPlot({ data }) {
       },
       title: {
         display: true,
-        text: 'Crimes by Time of Day',
+        text: 'Most Common Crimes by Time of Day',
         font: {
           size: 16,
         },
       },
       tooltip: {
+        callbacks: {
+          afterLabel: function(tooltipItem) {
+            return `Crime Type: ${crimeTypes[tooltipItem.dataIndex]}`;
+          }
+        },
         bodyFont: {
           size: 14,
         },
