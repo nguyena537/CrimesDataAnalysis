@@ -49,7 +49,7 @@ function App() {
   const [zipcodes, setZipcodes] = useState([]);
 
   return (
-    <div>
+    <div className="App">
       <header>
         <h1>Crime Data Map</h1>
       </header>
@@ -77,8 +77,8 @@ function App() {
         setCrimesVsIncomeData={setCrimesVsIncomeData}
         zipcodes={zipcodes}
       />
-      {loading && <p className='center-align'>Loading...</p>}
-      {error && <p className='center-align'>{error}</p>}
+      {loading && <p className="loading">Loading...</p>}
+      {error && <p className="error">{error}</p>}
       <MapContainer center={[37.7749, -122.4194]} zoom={5} id="map">
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -86,50 +86,50 @@ function App() {
         />
         <MapWithMarkers crimeData={crimeData} selectedCity={selectedCity} selectedZipcode={selectedZipcode} />
       </MapContainer>
-      {cityData && (
-        <div className="chart-container">
-          <div className="chart-wrapper">
-            <div className="chart-title">City Statistics</div>
-            <CityStatisticsPlot cityData={cityData} crimesVsIncomeData={crimesVsIncomeData}/>
-          </div>
-        </div>
-      )}
-      <div className="chart-container">
-        {crimeTypeData.length > 0 && (
-          <div className="chart-wrapper-crime">
-            <div className="chart-title">Crime Type Distribution</div>
-            <CrimePlot data={crimeTypeData} />
-          </div>
-        )}
-        {Object.keys(raceData).length > 0 && (
-          <div className="chart-wrapper-race">
-            <div className="race-pie-chart">
-            <div className="chart-title">Race Distribution</div>
-            
-            <RacePlot data={raceData} className="race-pie-chart"/>
+      <div className="plot-container">
+          {cityData && (
+          <div className="chart-container">
+            <div className="chart-wrapper">
+              <div className="chart-title">City Statistics</div>
+              <CityStatisticsPlot cityData={cityData} crimesVsIncomeData={crimesVsIncomeData}/>
             </div>
           </div>
-        )}
-        {Object.keys(incomeData).length > 0 && cityData && (
-          <div className="chart-wrapper-income">
-            <div className="chart-title">Income Distribution</div>
-            <IncomePlot data={{ ...incomeData, avg_income: cityData.avg_income }} />
-          </div>
-        )}
-        {Object.keys(crimeOverTimeData).length > 0 && (
-          <div className="chart-wrapper">
-            <div className="chart-title">Crimes Over Time</div>
-            <CrimeOverTimePlot data={crimeOverTimeData} />
-          </div>
-        )}
-        {crimeTimeData.length > 0 && (
-          <div className="chart-wrapper">
-            <div className="chart-title">Crimes by Time of Day</div>
-            <CrimeTimeOfDayPlot data={crimeTimeData} />
-          </div>
-        )}
-      </div>
+          )}
+          {crimeTypeData.length > 0 && (
+            <div className="chart-wrapper-crime">
+              <div className="chart-title">Crime Type Distribution</div>
+              <CrimePlot data={crimeTypeData} />
+            </div>
+          )}
+          {Object.keys(raceData).length > 0 && (
+            <div className="chart-wrapper-race">
+              <div className="race-pie-chart">
+              <div className="chart-title">Race Distribution</div>
+              
+              <RacePlot data={raceData} className="race-pie-chart"/>
+              </div>
+            </div>
+          )}
+          {Object.keys(incomeData).length > 0 && cityData && (
+            <div className="chart-wrapper-income">
+              <div className="chart-title">Income Distribution</div>
+              <IncomePlot data={{ ...incomeData, avg_income: cityData.avg_income }} />
+            </div>
+          )}
+          {Object.keys(crimeOverTimeData).length > 0 && (
+            <div className="chart-wrapper">
+              <div className="chart-title">Crimes Over Time</div>
+              <CrimeOverTimePlot data={crimeOverTimeData} />
+            </div>
+          )}
+          {crimeTimeData.length > 0 && (
+            <div className="chart-wrapper">
+              <div className="chart-title">Crimes by Time of Day</div>
+              <CrimeTimeOfDayPlot data={crimeTimeData} />
+            </div>
+          )}
     </div>
+  </div>
   );
 }
 

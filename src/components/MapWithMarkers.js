@@ -32,7 +32,9 @@ export default function MapWithMarkers({ crimeData, selectedCity, selectedZipcod
           return (
             <Marker key={index} position={position}>
               <Popup>
-                {crime.crime_description}<br />{crime.date} {crime.time}
+                <strong>{crime.crime_description}</strong><br />
+                Date: {crime.date}<br />
+                Time: {crime.time}
               </Popup>
             </Marker>
           );
