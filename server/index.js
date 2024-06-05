@@ -297,7 +297,8 @@ app.get('/crimeTypesByCity/:city', (req, res) => {
         const query = `
             SELECT * FROM crimeTypesForCity
             WHERE city="${city}"
-            ORDER BY crimeCount DESC;
+            ORDER BY crimeCount DESC
+            LIMIT 80;
         `;
 
         pool.getConnection(function (err, con) {
