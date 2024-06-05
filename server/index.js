@@ -283,6 +283,38 @@ app.get('/crimesOverTime/:zipcode', (req, res) => {
     
 });
 
+app.get('/crimeTypesByCity/:city', (req, res) => {
+    try {
+        let city = req.params.city;
+
+        if (city == "LA") {
+            city = "Los Angeles";
+        }
+        else if (city == "NYC") {
+            city = "New York City";
+        }
+
+        const query = `
+            SELECT * FROM crimeTypesForCity
+            WHERE city="${city}"
+            ORDER BY crimeCount DESC;
+        `;
+
+        pool.getConnection(function (err, con) {
+            if (err) throw err;
+            con.query(query, function (err, result) {
+                con.release();
+                if (err) throw err;
+                res.json(result);
+            });
+        });
+    }
+    catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+});
+
 function exitHandler() {
     pool.end();
     process.exit();
