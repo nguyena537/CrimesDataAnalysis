@@ -1,8 +1,17 @@
-# Getting Started with Create React App
+# Crime Data Analysis
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## Collaborators
+
+[Andre Nguyen](https://github.com/nguyena537g)
+[Christian Ruiz](https://github.com/cr-droid)
+[Ruben Ruiz Vazquez](https://github.com/RubenRuiz563)
+[Win Thant Tin Han](https://github.com/WinThant16)
+
+
+## Video Demo
+https://drive.google.com/file/d/1mvNY_VyMGLZYEwnZrrS8NAsR9RPoD7Fp/view?usp=sharing 
 
 In the project directory, you can run:
 
