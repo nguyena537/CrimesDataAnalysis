@@ -1,8 +1,23 @@
 import React from 'react';
-import { Bar } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 import 'chart.js/auto'; // Import Chart.js
 
-export default function CrimePlot({ data }) {
+export default function CrimeOverTimePlot({ data }) {
+  const years = Object.keys(data);
+  const crimeCounts = Object.values(data);
+
+  const chartData = {
+    labels: years,
+    datasets: [
+      {
+        label: 'Total Crimes',
+        data: crimeCounts,
+        borderColor: 'rgba(54, 162, 235, 0.6)',
+        fill: false,
+      },
+    ],
+  };
+
   const options = {
     responsive: true,
     plugins: {
@@ -16,17 +31,17 @@ export default function CrimePlot({ data }) {
       },
       title: {
         display: true,
-        text: 'Crime Data Plot',
+        text: 'Total Crimes Over Years',
         font: {
           size: 16,
         },
       },
       tooltip: {
         bodyFont: {
-          size: 18,
+          size: 14,
         },
         titleFont: {
-          size: 20,
+          size: 16,
         },
       },
     },
@@ -34,32 +49,19 @@ export default function CrimePlot({ data }) {
       x: {
         ticks: {
           font: {
-            size: 12,
+            size: 14,
           },
         },
       },
       y: {
         ticks: {
           font: {
-            size: 11,
+            size: 14,
           },
         },
       },
     },
   };
 
-  const labels = data.map(d => d.crimeType);
-
-  const chartData = {
-    labels,
-    datasets: [
-      {
-        label: 'Crime Count',
-        data: data.map(d => d.crimeCount),
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-      },
-    ],
-  };
-
-  return <Bar options={options} data={chartData} />;
+  return <Line options={options} data={chartData} />;
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto'; // Import Chart.js
 
-export default function CrimePlot({ data }) {
+export default function CrimesVsIncomePlot({ data }) {
   const options = {
     responsive: true,
     plugins: {
@@ -15,8 +15,8 @@ export default function CrimePlot({ data }) {
         },
       },
       title: {
-        display: true,
-        text: 'Crime Data Plot',
+        display: false,
+        text: 'Crimes vs. Income Range',
         font: {
           size: 16,
         },
@@ -48,14 +48,14 @@ export default function CrimePlot({ data }) {
     },
   };
 
-  const labels = data.map(d => d.crimeType);
+  const labels = data.map(d => `$${d.income_range}`);
 
   const chartData = {
     labels,
     datasets: [
       {
         label: 'Crime Count',
-        data: data.map(d => d.crimeCount),
+        data: data.map(d => d.crime_count),
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
       },
     ],

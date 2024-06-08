@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import React, { useState } from 'react';
+import { MapContainer, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-extra-markers/dist/css/leaflet.extra-markers.min.css';
 import 'leaflet-extra-markers/dist/js/leaflet.extra-markers.min.js';
@@ -13,6 +13,10 @@ import RacePlot from './components/RacePlot.js';
 import CrimePlot from './components/CrimePlot.js';
 import ZipcodeInput from './components/ZipcodeInput.js';
 import MapWithMarkers from './components/MapWithMarkers.js';
+import CrimeOverTimePlot from './components/CrimeOverTimePlot.js';
+import CrimeTimeOfDayPlot from './components/CrimeTimeOfDayPlot.js'; // New import
+import CityStatisticsPlot from './components/CityStatisticsPlot.js'; // New import
+import CityFilter from './components/CityFilter.js';
 
 let DefaultIcon = L.icon({
     iconUrl: icon,
@@ -29,42 +33,34 @@ const cityLocations = {
   Philly: [39.9526, -75.1652]
 };
 
-function CityFilter({ onSelectCity }) {
-  const handleChange = (event) => {
-    const city = event.target.value;
-    onSelectCity(city);
-  };
-
-  return (
-    <div className="filter-container">
-      <select onChange={handleChange}>
-        <option value="">Select a city</option>
-        <option value="LA">Los Angeles</option>
-        <option value="Chicago">Chicago</option>
-        <option value="Austin">Austin</option>
-        <option value="NYC">New York City</option>
-        <option value="Philly">Philadelphia</option>
-      </select>
-    </div>
-  );
-}
-
 function App() {
   const [crimeData, setCrimeData] = useState([]);
   const [crimeTypeData, setCrimeTypeData] = useState([]);
   const [raceData, setRaceData] = useState({});
   const [incomeData, setIncomeData] = useState({});
+  const [crimeTimeData, setCrimeTimeData] = useState([]);
+  const [crimeOverTimeData, setCrimeOverTimeData] = useState({});
+  const [cityData, setCityData] = useState(null); // New state for city data
+  const [crimesVsIncomeData, setCrimesVsIncomeData] = useState([]);
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedZipcode, setSelectedZipcode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [zipcodes, setZipcodes] = useState([]);
 
   return (
-    <div>
+    <div className="App">
       <header>
         <h1>Crime Data Map</h1>
       </header>
-      <CityFilter onSelectCity={setSelectedCity} />
+      <CityFilter 
+        onSelectCity={setSelectedCity} 
+        setLoading={setLoading}
+        setCityData={setCityData}
+        setZipcodes={setZipcodes}
+        setCrimesVsIncomeData={setCrimesVsIncomeData}
+        setError={setError}
+      />
       <ZipcodeInput 
         city={selectedCity} 
         onSubmitZipcode={setSelectedZipcode} 
@@ -74,10 +70,15 @@ function App() {
         setRaceData={setRaceData}
         setIncomeData={setIncomeData}
         setCrimeTypeData={setCrimeTypeData}
+        setCrimeTimeData={setCrimeTimeData}
+        setCrimeOverTimeData={setCrimeOverTimeData}
+        setCityData={setCityData}
         setError={setError}
+        setCrimesVsIncomeData={setCrimesVsIncomeData}
+        zipcodes={zipcodes}
       />
-      {loading && <p>Loading...</p>}
-      {error && <p>{error}</p>}
+      {loading && <p className="loading">Loading...</p>}
+      {error && <p className="error">{error}</p>}
       <MapContainer center={[37.7749, -122.4194]} zoom={5} id="map">
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -85,10 +86,50 @@ function App() {
         />
         <MapWithMarkers crimeData={crimeData} selectedCity={selectedCity} selectedZipcode={selectedZipcode} />
       </MapContainer>
-      {crimeTypeData.length > 0 && <CrimePlot data={crimeTypeData} />}
-      {Object.keys(raceData).length > 0 && <RacePlot data={raceData} />}
-      {Object.keys(incomeData).length > 0 && <IncomePlot data={incomeData} />}
+      <div className="plot-container">
+          {cityData && (
+          <div className="chart-container">
+            <div className="chart-wrapper">
+              <div className="chart-title">City Statistics</div>
+              <CityStatisticsPlot cityData={cityData} crimesVsIncomeData={crimesVsIncomeData}/>
+            </div>
+          </div>
+          )}
+          {crimeTypeData.length > 0 && (
+            <div className="chart-wrapper-crime">
+              <div className="chart-title">Crime Type Distribution</div>
+              <CrimePlot data={crimeTypeData} />
+            </div>
+          )}
+          {Object.keys(raceData).length > 0 && (
+            <div className="chart-wrapper-race">
+              <div className="race-pie-chart">
+              <div className="chart-title">Race Distribution</div>
+              
+              <RacePlot data={raceData} className="race-pie-chart"/>
+              </div>
+            </div>
+          )}
+          {Object.keys(incomeData).length > 0 && cityData && (
+            <div className="chart-wrapper-income">
+              <div className="chart-title">Income Distribution</div>
+              <IncomePlot data={{ ...incomeData, avg_income: cityData.avg_income }} />
+            </div>
+          )}
+          {Object.keys(crimeOverTimeData).length > 0 && (
+            <div className="chart-wrapper">
+              <div className="chart-title">Crimes Over Time</div>
+              <CrimeOverTimePlot data={crimeOverTimeData} />
+            </div>
+          )}
+          {crimeTimeData.length > 0 && (
+            <div className="chart-wrapper">
+              <div className="chart-title">Crimes by Time of Day</div>
+              <CrimeTimeOfDayPlot data={crimeTimeData} />
+            </div>
+          )}
     </div>
+  </div>
   );
 }
 

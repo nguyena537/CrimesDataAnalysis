@@ -12,6 +12,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 pool.getConnection(function (err, con) {
+    con.release();
     if (err) throw err;
     console.log("Connected to MySQL database!");
 });
@@ -34,6 +35,7 @@ app.get('/crimesForZipcode/:zipcode', (req, res) => {
         pool.getConnection(function (err, con) {
             if (err) throw err;
             con.query(query, function (err, results) {
+                con.release();
                 if (err) throw err;
                 const data = results.map(row => ({
                     latitude: row.latitude,
@@ -44,6 +46,7 @@ app.get('/crimesForZipcode/:zipcode', (req, res) => {
                 }));
                 res.json(data);
             });
+            
         });
     }
     catch (err) {
@@ -72,6 +75,7 @@ app.get('/mostCommonIncome/:city', (req, res) => {
         pool.getConnection(function (err, con) {
             if (err) throw err;
             con.query(query, function (err, result, fields) {
+                con.release();
                 if (err) throw err;
                 res.json(result);
             });
@@ -132,10 +136,12 @@ app.get('/dataForZipcode/:zipcode', (req, res) => {
         pool.getConnection(function (err, con) {
             if (err) throw err;
             con.query(query, function (err, result) {
+                con.release();
                 if (err) throw err;
                 res.json(result[0]);
             });
         });
+        
     }
     catch (err) {
         console.error(err.message);
@@ -153,6 +159,7 @@ app.get('/crimeTime/:zipcode', (req, res) => {
         pool.getConnection(function (err, con) {
             if (err) throw err;
             con.query(query, function (err, result) {
+                con.release();
                 if (err) throw err;
                 res.json(result);
             });
@@ -183,6 +190,7 @@ app.get('/cityStatistics/:city', (req, res) => {
         pool.getConnection(function (err, con) {
             if (err) throw err;
             con.query(query, function (err, result) {
+                con.release();
                 if (err) throw err;
                 res.json(result[0]);
             });
@@ -204,6 +212,7 @@ app.get('/crimeTypesForZipcode/:zipcode', (req, res) => {
         pool.getConnection(function (err, con) {
             if (err) throw err;
             con.query(query, function (err, results) {
+                con.release();
                 if (err) throw err;
                 res.json(results);
             });
@@ -235,6 +244,7 @@ app.get('/zipcodesForCity/:city', (req, res) => {
         pool.getConnection(function (err, con) {
             if (err) throw err;
             con.query(query, function (err, result) {
+                con.release();
                 if (err) throw err;
                 res.json(result.map(z => z.zip_code));
             });
@@ -246,5 +256,76 @@ app.get('/zipcodesForCity/:city', (req, res) => {
     }
     
 });
+
+app.get('/crimesOverTime/:zipcode', (req, res) => {
+    try {
+        let zipcode = req.params.zipcode;
+
+        const query = `
+            SELECT year, crimeCount FROM crimesOverTime
+            WHERE zip_code="${zipcode}"
+            ORDER BY year ASC;
+        `;
+
+        pool.getConnection(function (err, con) {
+            if (err) throw err;
+            con.query(query, function (err, result) {
+                con.release();
+                if (err) throw err;
+                res.json(result);
+            });
+        });
+    }
+    catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+    
+});
+
+app.get('/crimeTypesByCity/:city', (req, res) => {
+    try {
+        let city = req.params.city;
+
+        if (city == "LA") {
+            city = "Los Angeles";
+        }
+        else if (city == "NYC") {
+            city = "New York City";
+        }
+
+        const query = `
+            SELECT * FROM crimeTypesForCity
+            WHERE city="${city}"
+            ORDER BY crimeCount DESC
+            LIMIT 80;
+        `;
+
+        pool.getConnection(function (err, con) {
+            if (err) throw err;
+            con.query(query, function (err, result) {
+                con.release();
+                if (err) throw err;
+                res.json(result);
+            });
+        });
+    }
+    catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+});
+
+function exitHandler() {
+    pool.end();
+    process.exit();
+}
+
+// do something when app is closing
+process.on('exit', exitHandler);
+process.on('SIGINT', exitHandler);
+process.on('SIGUSR1', exitHandler);
+process.on('SIGUSR2', exitHandler);
+process.on('uncaughtException', exitHandler);
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

@@ -1,32 +1,192 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800;900&display=swap');
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Raleway', sans-serif;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+  background-color: #2d6c8c;
 }
 
 header {
-  background-color: #333;
+  background-color: #2d6c8c;
   color: white;
-  padding: 1rem;
+  padding: 1.5rem;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 h1 {
   margin: 0;
+  font-weight: 700;
 }
 
+.loading, .error {
+  color: #ffffff;
+  margin: 1rem;
+}
+
+.App {
+  text-align: center;
+  padding: 2rem;
+}
+
+.loading, .error {
+  color: #ffffff;
+  margin: 1rem;
+}
+
+/* Center alignment for loading text */
+.center-align {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Styling for filter container */
 .filter-container {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   margin: 1rem 0;
 }
 
-select {
+/* Dropdown and button styling */
+select, button {
   padding: 0.5rem;
   font-size: 1rem;
+  margin: 0.5rem 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
+/* Hover effects for dropdown and button */
+select:hover, button:hover {
+  border-color: #888;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Active state for button */
+button:active {
+  background-color: #333;
+  color: white;
+}
+
+/* Disabled state for button */
+button:disabled {
+  background-color: #ddd;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+/* Map container styling */
 #map {
   height: 600px;
   width: 100%;
+  margin-top: 1rem;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Chart container styling */
+.chart-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1rem;
+  width: 100%;
+  /* max-width: 1400px; */
+  padding: 10px;
+  box-sizing: border-box; /* Ensures padding is included in width */
+}
+
+/* Chart wrappers */
+.chart-wrapper, .chart-wrapper-race, .chart-wrapper-income, .chart-wrapper-crime {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1rem;
+  padding: 1rem;
+  width: 100%;
+  max-width: 900px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  border-radius: 4px;
+}
+
+.chart-wrapper-crime {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1rem;
+  padding: 1rem;
+  width: 100%;
+  max-width: 1200px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  border-radius: 4px;
+}
+
+.chart-wrapper-race{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1rem;
+  padding: 1rem;
+  width: 100%;
+  max-width: 900px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  border-radius: 4px;
+}
+
+.race-pie-chart{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1rem;
+  padding: 1rem;
+  width: 100%;
+  max-width: 450px;
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+  background-color: white;
+  border-radius: 4px;
+}
+
+.chart-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+/* Additional styling for city statistics */
+.city-statistics-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  margin: 30px;
+  width: 100%;
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+}
+
+.city-statistics-column-income, .city-statistics-column-race, .city-statistics-column-crime {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 650px;
 }
