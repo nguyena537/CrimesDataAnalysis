@@ -4,7 +4,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Collaborators
 
-[Andre Nguyen](https://github.com/nguyena537g)
+[Andre Nguyen](https://github.com/nguyena537)
 [Christian Ruiz](https://github.com/cr-droid)
 [Ruben Ruiz Vazquez](https://github.com/RubenRuiz563)
 [Win Thant Tin Han](https://github.com/WinThant16)
